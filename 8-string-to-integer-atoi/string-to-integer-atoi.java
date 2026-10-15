@@ -1,26 +1,34 @@
 class Solution {
     public int myAtoi(String s) {
-        int i = 0, n = s.length();
-
-        // 1. skip leading spaces
-        while (i < n && s.charAt(i) == ' ') i++;
-
-        // 2. optional sign
-        int sign = 1;
-        if (i < n && (s.charAt(i) == '+' || s.charAt(i) == '-')) {
-            if (s.charAt(i) == '-') sign = -1;
-            i++;
-        }
-
-        // 3. read digits, stop at first non-digit
         long num = 0;
-        while (i < n && Character.isDigit(s.charAt(i))) {
-            num = num * 10 + (s.charAt(i) - '0');
-            if (sign * num > Integer.MAX_VALUE) return Integer.MAX_VALUE;
-            if (sign * num < Integer.MIN_VALUE) return Integer.MIN_VALUE;
-            i++;
+        boolean started = false;   // true once a sign or digit has been seen
+        boolean negative = false;
+
+        for (int i = 0; i < s.length(); i++) {
+            char c = s.charAt(i);
+
+            if (c == ' ') {
+                if (started) break;      // space after sign/digits ends parsing
+                continue;                // leading space: skip
+            }
+            else if (c == '+' || c == '-') {
+                if (started) break;      // sign only allowed once, before digits
+                started = true;
+                negative = (c == '-');
+            }
+            else if (c >= '0' && c <= '9') {
+                started = true;
+                num = num * 10 + (c - '0');
+
+                // clamp with the sign applied, and stop before long overflows
+                if (!negative && num > Integer.MAX_VALUE) return Integer.MAX_VALUE;
+                if (negative && -num < Integer.MIN_VALUE) return Integer.MIN_VALUE;
+            }
+            else {
+                break;                   // any other character ends parsing
+            }
         }
 
-        return (int) (sign * num);
+        return (int) (negative ? -num : num);
     }
 }
