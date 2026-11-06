@@ -1,38 +1,37 @@
+import java.util.*;
 class Solution {
     public List<List<String>> partition(String s) {
-        List<String> curr = new ArrayList<>();
         List<List<String>> result = new ArrayList<>();
-        
-        partition(result,curr,s,0);
+        List<String> curr = new ArrayList<>();
+        partition(result,curr,0,s);
         return result;
 
-        
+
     }
-    public void partition(List<List<String>> result , List<String> curr , String s , int start ){
+    public void partition(List<List<String>> result , List<String> curr , int start , String s ){
         if(start == s.length()){
             result.add(new ArrayList<>(curr));
-            return;
+            return ;
         }
-        for(int end = start+1; end<=s.length() ; end++){
-            String sb =s.substring(start,end);
-            if(isValidPalindrome(sb)){
+        for(int end = start+1 ; end<=s.length() ;end++){
+            String sb = s.substring(start,end);
+            if(isvalidpalindrome(sb)){
                 curr.add(sb);
-                partition(result,curr,s,end);
-                curr.remove(curr.size() -1);
-            } 
+                partition(result,curr,end,s);
+                curr.remove(curr.size()-1);
+            }
         }
 
-        
     }
-    public boolean isValidPalindrome(String s ){
-        int i = 0 ;
+    public boolean isvalidpalindrome(String s){
         int n = s.length();
-        while(i<n/2){
+        for(int i = 0 ; i<n/2; i++){
             if(s.charAt(i) != s.charAt(n-1-i)){
                 return false;
             }
-            i++;
         }
         return true;
+
     }
+    
 }
